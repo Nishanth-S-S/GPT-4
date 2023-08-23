@@ -32,10 +32,18 @@ def load_data_from_txt_file(file_path):
             tasks.append(task_data)
     return tasks
 
+
+
+
 def main():
     st.title("🏫 📅 School Work Scheduling App")
+    uploaded_file = st.file_uploader("Choose a file", type=["txt"])
 
-    file_path = st.text_input("Enter the path to the .txt file:")
+    path7809 = None  # Initialize the variable with a default value
+
+    if uploaded_file is not None:
+        path7809 = uploaded_file.name  # Assign a value to the variable if uploaded_file is not None
+    file_path = path7809
     if st.button("Load Data"):
         try:
             tasks = load_data_from_txt_file(file_path)
