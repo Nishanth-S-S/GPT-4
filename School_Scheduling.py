@@ -16,6 +16,11 @@ def calculate_priority(task_data):
     days_until_due = (due_date - datetime.now()).days
     points += max(0, 50 - days_until_due)
 
+    if task_data['subject'] in ["Math", "Science", "Language", "Spanish"]:
+        points += 10
+
+
+
     return points
 
 def load_data_from_txt_file(file_path):
@@ -49,8 +54,11 @@ def main():
                 file.write(str(task_data) + "\n")
         st.success("Data saved to file 'saved_tasks.txt'")
 
+
+    st.write("")
+    st.write("")
     tasks = st.text_input("Enter a task:")
-    subject = st.selectbox("Select the subject:", ["Math", "Science", "History", "Language"])
+    subject = st.selectbox("Select the subject:", ["Math", "Science", "History", "Language","Spanish",])
     grade_type = st.radio("Select grade type:", ["Perform Grade", "Rehearse Grade", "Prepare Grade"])
     due_date = st.date_input("Select the due date:")
 
