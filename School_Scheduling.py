@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 import random
+import json
 
 def calculate_priority(task_data):
     points = 0
@@ -19,54 +20,15 @@ def calculate_priority(task_data):
     if task_data['subject'] in ["Math", "Science", "Language", "Spanish"]:
         points += 10
 
-
-
     return points
-
-def load_data_from_txt_file(file_path):
-    tasks = []
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-        for line in lines:
-            task_data = eval(line.strip())
-            tasks.append(task_data)
-    return tasks
-
-
-
 
 def main():
     st.title("🏫 📅 School Work Scheduling App")
-    uploaded_file = st.file_uploader("Choose a file", type=["txt"])
-
-    path7809 = None  # Initialize the variable with a default value
-
-    if uploaded_file is not None:
-        path7809 = uploaded_file.name  # Assign a value to the variable if uploaded_file is not None
-    file_path = path7809
-    if st.button("Load Data"):
-        try:
-            tasks = load_data_from_txt_file(file_path)
-            st.session_state.tasks = tasks
-            st.success("Data loaded successfully!")
-        except Exception as e:
-            st.error(f"Error loading data: {e}")
-
-    if "tasks" not in st.session_state:
-        st.session_state.tasks = []
-
-    save_data = st.checkbox("Save Data to File")
-    if save_data:
-        with open("saved_tasks.txt", "w") as file:
-            for task_data in st.session_state.tasks:
-                file.write(str(task_data) + "\n")
-        st.success("Data saved to file 'saved_tasks.txt'")
-
 
     st.write("")
     st.write("")
     tasks = st.text_input("Enter a task:")
-    subject = st.selectbox("Select the subject:", ["Math", "Science", "History", "Language","Spanish",])
+    subject = st.selectbox("Select the subject:", ["Math", "Science", "History", "Language", "Spanish"])
     grade_type = st.radio("Select grade type:", ["Perform Grade", "Rehearse Grade", "Prepare Grade"])
     due_date = st.date_input("Select the due date:")
 
@@ -112,5 +74,24 @@ def main():
                     st.session_state.tasks.pop(task_to_delete)
                     st.info("Task deleted!")
 
+    # Export Tasks as JSON Text
+    if st.button("Export Tasks"):
+        export_data = st.session_state.tasks
+        json_text = json.dumps(export_data, indent=2)  # Format JSON for display
+        st.text("Exported Tasks:\n" + json_text)
+
+    # Import Tasks from JSON
+    st.write("## Import Tasks from JSON")
+    json_input = st.text_area("Paste JSON code here:")
+    if st.button("Import Tasks"):
+        try:
+            imported_data = json.loads(json_input)
+            st.session_state.tasks = imported_data
+            st.success("Tasks imported successfully!")
+        except json.JSONDecodeError:
+            st.error("Invalid JSON code. Please paste a valid JSON code.")
+
 if __name__ == "__main__":
+    if 'tasks' not in st.session_state:
+        st.session_state.tasks = []
     main()
