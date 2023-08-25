@@ -1,4 +1,5 @@
 # Bring in deps
+!pip install langchain
 import os
 
 import streamlit as st
